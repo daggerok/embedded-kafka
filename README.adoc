@@ -1,0 +1,20 @@
+= embedded-kafka image:https://travis-ci.org/daggerok/embedded-kafka.svg?branch=master["Build Status", link="https://travis-ci.org/daggerok/embedded-kafka"]
+
+=== gradle flow
+
+.1 build and deploy (publish) `gradle-producer` library to github (user: daggerok, repo: embedded-kafka, branch: mvn-repo)
+----
+bash ./gradlew clean deploy
+----
+
+.2 consuming
+[sources,groovy]
+----
+repositories {
+  // ...
+  maven { url "https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/" }
+}
+dependencies {
+  compile "daggerok:embedded-kafka:0.0.1"
+}
+----
