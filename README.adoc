@@ -4,7 +4,8 @@
 
 .1 build and deploy (publish) `gradle-producer` library to github (user: daggerok, repo: embedded-kafka, branch: mvn-repo)
 ----
-bash ./gradlew clean deploy
+bash ./gradlew clean build publish
+bash ./gradlew deploy
 ----
 
 .2 consuming
@@ -15,6 +16,13 @@ repositories {
   maven { url "https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/" }
 }
 dependencies {
-  compile "daggerok:embedded-kafka:0.0.1"
+  compile "daggerok:embedded-kafka:0.0.2"
 }
+----
+
+3. simply download and run
+----
+cd /tmp
+wget -O kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/daggerok/embedded-kafka/0.0.1/embedded-kafka-0.0.1.jar
+java -jar kafka.jar
 ----
