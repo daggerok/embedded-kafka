@@ -9,7 +9,10 @@ jdk:
 - openjdk8
 install: true
 before_script:
-- sudo apt update
-- sudo apt install -y python-pip curl jq
-- sudo pip install httpie
-script: echo "bash ./gradlew clean build publish || true"
+- sudo apt update -y || true
+- sudo apt install -y wget
+script:
+- wget -O kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/daggerok/embedded-kafka/0.0.1/embedded-kafka-0.0.1.jar
+- java -jar kafka.jar &
+- sleep 10
+- sudo killall -9 java || true

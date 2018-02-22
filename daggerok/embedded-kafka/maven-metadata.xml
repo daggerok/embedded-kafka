@@ -3,10 +3,10 @@
   <groupId>daggerok</groupId>
   <artifactId>embedded-kafka</artifactId>
   <versioning>
-    <release>0.0.1</release>
+    <release>0.0.2</release>
     <versions>
-      <version>0.0.1</version>
+      <version>0.0.2</version>
     </versions>
-    <lastUpdated>20180214064833</lastUpdated>
+    <lastUpdated>20180222232725</lastUpdated>
   </versioning>
 </metadata>
