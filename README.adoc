@@ -4,7 +4,7 @@
 
 .1 build and deploy (publish) `gradle-producer` library to github (user: daggerok, repo: embedded-kafka, branch: mvn-repo)
 ----
-bash ./gradlew clean build publish deploy
+bash ./gradlew clean build publish
 bash ./gradlew deploy
 ----
 
