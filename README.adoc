@@ -16,7 +16,7 @@ repositories {
   maven { url "https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/" }
 }
 dependencies {
-  compile "daggerok:embedded-kafka:0.0.1"
+  compile "daggerok:embedded-kafka:0.0.2"
 }
 ----
 
