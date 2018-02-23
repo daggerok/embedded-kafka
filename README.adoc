@@ -20,7 +20,7 @@ dependencies {
 }
 ----
 
-3. simply download and run
+.3 simply download and run
 ----
 cd /tmp
 wget -O kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/daggerok/embedded-kafka/0.0.1/embedded-kafka-0.0.1.jar
