@@ -99,9 +99,11 @@ dependencyManagement {
   }
 }
 
+/*
 bootJar {
   launchScript()
 }
+*/
 
 def profile = project.hasProperty("profile") ? project.getProperty("profile") : "gradle"
 
