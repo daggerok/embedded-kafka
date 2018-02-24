@@ -1,8 +1,8 @@
 group: travis_lts
 env:
   global:
-    - TERM=dumb
-    - secure: "nqPraWh/ByMC/ZjiSQX3DDqp23GKLRvNLQqxDrS5+WNHAN+0JGw+dBdJ+Ukhkj4d6K4W4IdHxKTTQDJcPDIDrbbrMsfiHgnj2sN2vbFEm7mt1Xso7AxhhoPLrfCbffiv4A+W/+PC0Xvp5cfDBwE5NC9SA8rgikI4olCRSQHYdE9JamdbDnNQWXhGrWBj7ii7x2NmROhFH/8VsqGDtLlO9TJMGVBG0KJnV0bw9BB40R8iYqaQ8NHdaBUWLULVB5Ml4qLcAesdwBcblfWGO9YsiXfimdRh2DVWM4D+Rv0ZZ0VffR0S+0aX1OlZimUnFWKcLWG7r4fCuWdHtC5//7HUnCnDuWP7EyD0XH244r91daY0AA5BrggxB48gbdlLSrJuJwZ26A7lyuL84f3+aofvWCnHsgJbX+Vnap5iiX/H97IK2ceNW71Sgggqoutg69MVX0LQznrNg5HAak1L3V+j6wB4K0hbOfNu9w6cVZRpTywkGXwOuY2f/uoXB5VWUy9UzO2t5cEq99h3XFoXseTeRknS7cu7kn7sA1rdr+1KhxVVRxHoLTh7qK/RVM1kC7g8hTikfKJLI3txsqCBHWuNqdGno/8KI95opFZjPSEz107PEJWL0KdvfumlxVNdzL513b/mXrSLjYDi1h+vvjAFF9QlVNsVGPWNNhncUQULMcI="
+  - TERM=dumb
+  - secure: "nqPraWh/ByMC/ZjiSQX3DDqp23GKLRvNLQqxDrS5+WNHAN+0JGw+dBdJ+Ukhkj4d6K4W4IdHxKTTQDJcPDIDrbbrMsfiHgnj2sN2vbFEm7mt1Xso7AxhhoPLrfCbffiv4A+W/+PC0Xvp5cfDBwE5NC9SA8rgikI4olCRSQHYdE9JamdbDnNQWXhGrWBj7ii7x2NmROhFH/8VsqGDtLlO9TJMGVBG0KJnV0bw9BB40R8iYqaQ8NHdaBUWLULVB5Ml4qLcAesdwBcblfWGO9YsiXfimdRh2DVWM4D+Rv0ZZ0VffR0S+0aX1OlZimUnFWKcLWG7r4fCuWdHtC5//7HUnCnDuWP7EyD0XH244r91daY0AA5BrggxB48gbdlLSrJuJwZ26A7lyuL84f3+aofvWCnHsgJbX+Vnap5iiX/H97IK2ceNW71Sgggqoutg69MVX0LQznrNg5HAak1L3V+j6wB4K0hbOfNu9w6cVZRpTywkGXwOuY2f/uoXB5VWUy9UzO2t5cEq99h3XFoXseTeRknS7cu7kn7sA1rdr+1KhxVVRxHoLTh7qK/RVM1kC7g8hTikfKJLI3txsqCBHWuNqdGno/8KI95opFZjPSEz107PEJWL0KdvfumlxVNdzL513b/mXrSLjYDi1h+vvjAFF9QlVNsVGPWNNhncUQULMcI="
 language: java
 jdk:
 - oraclejdk8
@@ -10,31 +10,60 @@ jdk:
 install: true
 before_script:
 - sudo apt update -y || true
-- sudo apt install -y --no-install-recommends bash unzip curl jq libxml2-utils docker-ce python-pip
+- sudo apt install -y --no-install-recommends wget bash unzip curl jq libxml2-utils docker-ce python-pip
 - sudo pip install docker-compose httpie
 - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
 - stop_any 8080 80
 script:
 - bash gradlew
-- bash publish
+- bash gradlew publish
 #
-- java -jar build/libs/*-all.jar --topics=one,two,three &
+- java -jar build/libs/*-all.jar --topics=one,two,three  --zookeeperDir=/tmp/0 &
 - wait_for 8080
+- sleep 35
 - http :8080
-- sleep 15
 - stop_any 8080 80
 #
-- bash build/install/embedded-kafka/bin/embedded-kafka --topics=ololo,trololo
+- bash build/install/embedded-kafka/bin/embedded-kafka --kafkaTopics=ololo,trololo  --zookeeperDir=/tmp/1 &
 - wait_for 8080
+- sleep 35
 - http :8080
-- sleep 15
 - stop_any 8080 80
+#
+- unzip -o build/distributions/embedded-kafka-0.0.3.zip -d /tmp
+- bash /tmp/embedded-kafka-0.0.3/bin/embedded-kafka --kafkaTopics=odin,dva,tri --zookeeperDir=/tmp/2 &
+- wait_for 8080
+- sleep 35
+- http :8080
+- stop_any 8080 80
+#
+- docker-compose -f docker-compose-gradle.yaml build --pull --no-cache --force-rm
+- docker-compose -f docker-compose-gradle.yaml up &
+- sleep 40
+- http :8080
+- docker-compose -f docker-compose-gradle.yaml down -v
+#
+- bash gradlew composeUp
+- http :8080
+- bash gradlew composeDown
+#
 ## 0.0.1 (kafka-unit)
 #- wget -O kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/daggerok/embedded-kafka/0.0.2/embedded-kafka-0.0.2.jar
+#
 ## 0.0.2 (spring-kafka-test)
 #- wget -O kafka.jar https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/daggerok/embedded-kafka/0.0.2/embedded-kafka-0.0.2.jar
+#
 ## 0.0.3 (kotlin kafka zookeeper com.sun.net.httpserver)
 - wget -O kafka.jar https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/embedded-kafka-0.0.3-all.jar
-- java -jar kafka.jar &
-- sleep 10
-- sudo killall -9 java || true
+- >
+  java -jar kafka.jar \
+            --zookeeperPort=1234 \
+            --zookeeperDir=/tmp \
+            --kafkaPort=1235 \
+            --kafkaTopics=and1,and2,and3,and4 \
+            --httpPort=1236 \
+            --httpContext=/health &
+- wait_for 1236
+- sleep 35
+- http :1236/health
+- stop_any 1234 1235 1236

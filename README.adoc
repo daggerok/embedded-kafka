@@ -2,7 +2,7 @@
 
 === gradle flow
 
-.1 build and deploy (publish) `gradle-producer` library to github (user: daggerok, repo: embedded-kafka, branch: mvn-repo)
+.1 build and deploy (publish) to github (user: daggerok, repo: embedded-kafka, branch: mvn-repo)
 ----
 bash ./gradlew
 bash ./gradlew publish
@@ -25,5 +25,11 @@ dependencies {
 ----
 cd /tmp
 wget -O kafka.jar https://github.com/daggerok/embedded-kafka/embedded-kafka-0.0.3-all.jar
-java -jar kafka.jar
+java -jar kafka.jar \
+            --zookeeperPort=2181 \
+            --zookeeperDir=/tmp \
+            --kafkaPort=9092 \
+            --kafkaTopics=topic1,topic2 \
+            --httpPort=8080 \
+            --httpContext=/ &
 ----
