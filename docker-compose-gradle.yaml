@@ -2,19 +2,36 @@ version: "2.1"
 
 services:
 
+##custom:
+#  gradle-embedded-kafka-app:
+#    build:
+#      context: .
+#      dockerfile: gradle/Dockerfile
+#    environment:
+#      ZOOKEEPER_PORT: 12181
+#      ZOOKEEPER_DIR: ./zk
+#      KAFKA_PORT: 19092
+#      KAFKA_TOPICS: ol,trol,hohol
+#      HTTP_PORT: 18080
+#      HTTP_CONTEXT: /
+#    volumes: ["gradle-embedded-kafka-app-data:/home"]
+#    ports: ["18080:18080"]
+#    networks: [backing-services]
+
   gradle-embedded-kafka-app:
     build:
       context: .
       dockerfile: gradle/Dockerfile
     environment:
-      KAFKA_TOPICS: 'ololololo,trololololollolo'
-    volumes:
-    - "gradle-embedded-kafka-app-data:/home"
-    - "gradle-embedded-kafka-app-data:/var"
-    - "gradle-embedded-kafka-app-data:/tmp"
+      ZOOKEEPER_PORT: 2181
+      ZOOKEEPER_DIR: ./zk
+      KAFKA_PORT: 9092
+      KAFKA_TOPICS: topic1,topic2
+      HTTP_PORT: 8080
+      HTTP_CONTEXT: /
+    volumes: ["gradle-embedded-kafka-app-data:/home"]
     ports: ["8080:8080"]
     networks: [backing-services]
-    mem_limit: 786432000 # container limit: 700Mb (700 * 1024 * 1024)
 
 volumes:
   gradle-embedded-kafka-app-data: {}
