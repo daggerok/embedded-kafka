@@ -33,3 +33,7 @@ java -jar kafka.jar \
             --httpPort=8080 \
             --httpContext=/ &
 ----
+
+links:
+
+. link:http://www.javenue.info/post/java-http-server[Embedded Java HTTP Server]
