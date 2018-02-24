@@ -25,5 +25,5 @@ dependencies {
 ----
 cd /tmp
 wget -O kafka.jar https://github.com/daggerok/embedded-kafka/embedded-kafka-0.0.3-all.jar
-java -jar kafka.jar
+java -jar kafka.jar --kafkaTopics=topic1,topic2 --zookeeperDir=/tmp
 ----

@@ -15,20 +15,42 @@ import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.*
 
 val zkPort = 2181
 val httpPort = 8080
 val log = LoggerFactory.getLogger(App::class.java)
 
-fun startZk() {
+fun parseAgrsByPrefix(vararg args: String, prefix: String) =
+    args.toList()
+        .flatMap { it.split("\\s+".toRegex()) }
+        .filter { it.startsWith(prefix) }
+        .filter { it.contains("=") }
+        .map { it.split("=") }
+        .map { it[1] }
+        .onEach { println("\n\n $it \n\n") }
+        .flatMap { it.split(",", ", ", ";", "; ") }
 
-  val dir = Files.createTempDirectory("zk").toFile().absoluteFile
-  val zkServer = ZooKeeperServer(dir, dir, 2000)
+fun startZk(vararg args: String) {
+
+  val userInput = parseAgrsByPrefix(*args, prefix = "--zookeeperDir=")
+  val defaultZkDir = "zk"
+  var zkDir = "."
+
+  if (userInput.isNotEmpty()) zkDir = userInput.first()
+  if (zkDir.startsWith(".")) zkDir = Paths.get(zkDir).toAbsolutePath().toString()
+  if (zkDir.isEmpty()) zkDir = defaultZkDir
+
+  val aPath = Paths.get("build", zkDir).toAbsolutePath()
+  val aFile = aPath.toFile()
+  aFile.deleteOnExit()
+  val zookeeperDir = Files.createDirectories(aPath).toFile()
+  val zkServer = ZooKeeperServer(zookeeperDir, zookeeperDir, 2000)
   val standaloneServerFactory = NIOServerCnxnFactory.createFactory(2181, Short.MAX_VALUE.toInt())
 
   standaloneServerFactory.startup(zkServer)
-  log.info("zookeeper started.\nzkPort: {}\nzkDir: {}", zkPort, dir)
+  log.info("zookeeper started.\nzkPort: {}\nzkDir: {}", zkPort, zookeeperDir)
 }
 
 fun startKafka() {
@@ -44,10 +66,9 @@ fun startKafka() {
   log.info("kafka started.\nkafkaProperties: {}", kafkaProperties)
 }
 
-fun handleUserInput(vararg topics: String) {
+fun createKafkaTopics(vararg args: String) {
 
-
-  val userInput = topics.toList()
+  val userInput = parseAgrsByPrefix(*args, prefix = "--kafkaTopics=")
   log.info("handling user input: $userInput")
   if (userInput.isEmpty()) return
 
@@ -57,17 +78,10 @@ fun handleUserInput(vararg topics: String) {
   val zkConnection = ZkConnection(zkUrl, timeout)
   val zkUtils = ZkUtils(zkClient, zkConnection, false)
 
-  userInput
-      .flatMap { it.split("\\s+".toRegex()) }
-      .filter { it.startsWith("--topics=") }
-      .map { it.split("=") }
-      .map { it[1] }
-      .onEach { println("\n\n $it \n\n") }
-      .flatMap { it.split(",", ", ", ";", "; ") }
-      .forEach {
-        AdminUtils.createTopic(zkUtils, it, 1, 1, Properties(), null)
-        log.info("Topic $it created.")
-      }
+  userInput.forEach {
+    AdminUtils.createTopic(zkUtils, it, 1, 1, Properties(), null)
+    log.info("Topic $it created.")
+  }
 }
 
 fun startHttpServer() {
@@ -90,9 +104,9 @@ class App {
   companion object {
     @JvmStatic fun main(args: Array<String>) {
       BasicConfigurator.configure()
-      startZk()
+      startZk(*args)
       startKafka()
-      handleUserInput(*args)
+      createKafkaTopics(*args)
       startHttpServer()
     }
   }
