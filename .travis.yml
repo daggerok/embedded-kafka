@@ -12,17 +12,20 @@ before_script:
 - sudo apt update -y || true
 - sudo apt install -y wget
 script:
-#- bash gradlew clean build
-#- bash build/libs/*.jar &
-#- wait_for 8080
-#- http :8080
-#- stop_any 8080
+- bash gradlew clean build
+- bash build/libs/*.jar &
+- wait_for 8080
+- http :8080
+- stop_any 8080
 
 ## 0.0.1 (kafka-unit)
 #- wget -O kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/daggerok/embedded-kafka/0.0.2/embedded-kafka-0.0.2.jar
 
 ## 0.0.2 (spring-kafka-test)
-- wget -O kafka.jar https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/daggerok/embedded-kafka/0.0.2/embedded-kafka-0.0.2.jar
+#- wget -O kafka.jar https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/daggerok/embedded-kafka/0.0.2/embedded-kafka-0.0.2.jar
+
+## 0.0.3 (kotlin kafka zookeeper com.sun.net.httpserver)
+- wget -O kafka.jar https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/embedded-kafka-0.0.3-all.jar
 - java -jar kafka.jar &
 - sleep 10
 - sudo killall -9 java || true
