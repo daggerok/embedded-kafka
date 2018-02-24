@@ -6,7 +6,12 @@ services:
     build:
       context: .
       dockerfile: gradle/Dockerfile
-    volumes: ["gradle-embedded-kafka-app-data:/home/app"]
+    environment:
+      KAFKA_TOPICS: 'ololololo,trololololollolo'
+    volumes:
+    - "gradle-embedded-kafka-app-data:/home"
+    - "gradle-embedded-kafka-app-data:/var"
+    - "gradle-embedded-kafka-app-data:/tmp"
     ports: ["8080:8080"]
     networks: [backing-services]
     mem_limit: 786432000 # container limit: 700Mb (700 * 1024 * 1024)
