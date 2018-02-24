@@ -31,7 +31,7 @@ script:
             --kafkaTopics=and1,and2,and3,and4 \
             --httpPort=1236 \
             --httpContext=/health &
-- wait_for 1234 1235 1236
+- wait_for 1236
 - sleep 35
 - http :1236/health
 - stop_any 1234 1235 1236
