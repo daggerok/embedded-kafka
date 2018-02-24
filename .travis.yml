@@ -28,7 +28,7 @@ script:
             --zookeeperPort=1234 \
             --zookeeperDir=/tmp \
             --kafkaPort=1235 \
-            --kafkaTopics=odin,dva,tri &
+            --kafkaTopics=and1,and2,and3,and4 \
             --httpPort=1236 \
             --httpContext=/health &
 - wait_for 1234 1235 1236
