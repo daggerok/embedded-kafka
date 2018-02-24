@@ -10,14 +10,11 @@ jdk:
 install: true
 before_script:
 - sudo apt update -y || true
-- sudo apt install -y wget
+- sudo apt install -y --no-install-recommends bash unzip wget
+- sudo pip install httpie
+- source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
+- stop_any 8080 80
 script:
-- bash gradlew clean build
-- bash build/libs/*.jar &
-- wait_for 8080
-- http :8080
-- stop_any 8080
-
 ## 0.0.1 (kafka-unit)
 #- wget -O kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/daggerok/embedded-kafka/0.0.2/embedded-kafka-0.0.2.jar
 
@@ -26,6 +23,8 @@ script:
 
 ## 0.0.3 (kotlin kafka zookeeper com.sun.net.httpserver)
 - wget -O kafka.jar https://raw.githubusercontent.com/daggerok/embedded-kafka/mvn-repo/embedded-kafka-0.0.3-all.jar
-- java -jar kafka.jar &
-- sleep 10
-- sudo killall -9 java || true
+- java -jar kafka.jar --kafkaTopics=odin,dva,tri --zookeeperDir=/tmp &
+- wait_for 8080
+- sleep 35
+- http :8080
+- stop_any 8080 80
