@@ -24,7 +24,7 @@ dependencies {
 .3 simply download and run
 ----
 cd /tmp
-wget -O kafka.jar https://github.com/daggerok/embedded-kafka/embedded-kafka-0.0.3-all.jar
+wget -O kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/embedded-kafka-0.0.3-all.jar
 java -jar kafka.jar \
             --zookeeperPort=2181 \
             --zookeeperDir=/tmp \
