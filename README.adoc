@@ -3,6 +3,7 @@
 === gradle flow
 
 .1 build and deploy (publish) to github (user: daggerok, repo: embedded-kafka, branch: mvn-repo)
+[source,bash]
 ----
 bash ./gradlew
 bash ./gradlew publish
@@ -10,7 +11,7 @@ bash ./gradlew deploy
 ----
 
 .2 consuming
-[sources,groovy]
+[source,gradle]
 ----
 repositories {
   // ...
@@ -22,16 +23,16 @@ dependencies {
 ----
 
 .3 simply download and run
+[source,bash]
 ----
-cd /tmp
-wget -O kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/embedded-kafka-0.0.3-all.jar
-java -jar kafka.jar \
-            --zookeeperPort=2181 \
-            --zookeeperDir=/tmp \
-            --kafkaPort=9092 \
-            --kafkaTopics=topic1,topic2 \
-            --httpPort=8080 \
-            --httpContext=/ &
+wget -O /tmp/kafka.jar https://github.com/daggerok/embedded-kafka/raw/mvn-repo/embedded-kafka-0.0.3-all.jar
+java -jar /tmp/kafka.jar \
+  --zookeeperPort=2181 \
+  --zookeeperDir=/tmp \
+  --kafkaPort=9092 \
+  --kafkaTopics=topic1,topic2 \
+  --httpPort=8080 \
+  --httpContext=/ &
 ----
 
 links:
