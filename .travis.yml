@@ -1,19 +1,34 @@
-group: travis_lts
+service:
+- docker
+
 env:
   global:
   - TERM=dumb
   - secure: "nqPraWh/ByMC/ZjiSQX3DDqp23GKLRvNLQqxDrS5+WNHAN+0JGw+dBdJ+Ukhkj4d6K4W4IdHxKTTQDJcPDIDrbbrMsfiHgnj2sN2vbFEm7mt1Xso7AxhhoPLrfCbffiv4A+W/+PC0Xvp5cfDBwE5NC9SA8rgikI4olCRSQHYdE9JamdbDnNQWXhGrWBj7ii7x2NmROhFH/8VsqGDtLlO9TJMGVBG0KJnV0bw9BB40R8iYqaQ8NHdaBUWLULVB5Ml4qLcAesdwBcblfWGO9YsiXfimdRh2DVWM4D+Rv0ZZ0VffR0S+0aX1OlZimUnFWKcLWG7r4fCuWdHtC5//7HUnCnDuWP7EyD0XH244r91daY0AA5BrggxB48gbdlLSrJuJwZ26A7lyuL84f3+aofvWCnHsgJbX+Vnap5iiX/H97IK2ceNW71Sgggqoutg69MVX0LQznrNg5HAak1L3V+j6wB4K0hbOfNu9w6cVZRpTywkGXwOuY2f/uoXB5VWUy9UzO2t5cEq99h3XFoXseTeRknS7cu7kn7sA1rdr+1KhxVVRxHoLTh7qK/RVM1kC7g8hTikfKJLI3txsqCBHWuNqdGno/8KI95opFZjPSEz107PEJWL0KdvfumlxVNdzL513b/mXrSLjYDi1h+vvjAFF9QlVNsVGPWNNhncUQULMcI="
+
 language: java
 jdk:
 - oraclejdk8
 - openjdk8
+
+apt:
+  update: true
+  packages:
+  - wget
+  - bash
+  - unzip
+  - curl
+  - jq
+  - libxml2-utils
+  - docker-ce
+  - python-pip
+
 install: true
 before_script:
-- sudo apt update -y || true
-- sudo apt install -y --no-install-recommends wget bash unzip curl jq libxml2-utils docker-ce python-pip
-- sudo pip install docker-compose httpie
+- sudo pip install docker-compose httpie >/dev/null 2>&1
 - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
 - stop_any 8080 80
+
 script:
 - bash gradlew
 - bash gradlew publish
